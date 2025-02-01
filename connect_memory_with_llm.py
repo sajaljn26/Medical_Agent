@@ -11,9 +11,6 @@ load_dotenv()
 HUGGINGFACEHUB_API_TOKEN = os.environ["HF_TOKEN"]
 HUGGINGFACE_REPO_ID ="google/gemma-2-2b-it"
 
-print(HUGGINGFACEHUB_API_TOKEN)
-
-
 
 def load_llm(huggingface_rep_id):
     return HuggingFaceEndpoint(
@@ -39,4 +36,4 @@ documents = retriever.invoke(user_query)
 response = chain.invoke({"context": documents})
 
 print("RESULT:", response)
-
+print("Source" , documents)
