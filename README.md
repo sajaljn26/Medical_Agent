@@ -10,13 +10,6 @@ This project is a **Medical Chatbot** designed to provide accurate and context-a
 2. [Features](#features)
 3. [Prerequisites](#prerequisites)
 4. [Installation](#installation)
-5. [Data Preparation](#data-preparation)
-6. [Usage](#usage)
-7. [Configuration](#configuration)
-8. [Ethical Considerations](#ethical-considerations)
-9. [License](#license)
-10. [Acknowledgments](#acknowledgments)
-11. [Contributing](#contributing)
 
 ---
 
