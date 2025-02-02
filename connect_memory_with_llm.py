@@ -11,17 +11,27 @@ load_dotenv()
 HUGGINGFACEHUB_API_TOKEN = os.environ["HF_TOKEN"]
 HUGGINGFACE_REPO_ID ="google/gemma-2-2b-it"
 
+CUSTOM_PROMPT_TEMPLATE = """
+Use the pieces of information provided in the context to answer user's question.
+If you don't know the answer, just say that you don't know, don't try to make up an answer. 
+Don't provide anything out of the given context.
+
+Context: {context}
+Question: {question}
+
+Start the answer directly. No small talk please.
+"""
 
 def load_llm(huggingface_rep_id):
     return HuggingFaceEndpoint(
         repo_id=HUGGINGFACE_REPO_ID,
         temperature=0.5,
-        model_kwargs={"max_length": 512},  # Correct parameter location
+        model_kwargs={"max_length": 512},  
         huggingfacehub_api_token=HUGGINGFACEHUB_API_TOKEN
     )
 
-# Rest of the code with updated retriever method
-prompt = ChatPromptTemplate.from_template("Summarize this content: {context}")
+
+prompt = ChatPromptTemplate.from_template(CUSTOM_PROMPT_TEMPLATE)
 DB_FAISS_PATH = "vectorstore/db_faiss"
 embedding_model = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
 db = FAISS.load_local(DB_FAISS_PATH, embeddings=embedding_model, allow_dangerous_deserialization=True)
@@ -31,9 +41,10 @@ llm = load_llm(HUGGINGFACE_REPO_ID)
 chain = create_stuff_documents_chain(llm, prompt)
 
 user_query = input("Write Query Here: ")
-# Updated method to use invoke() instead of get_relevant_documents()
 documents = retriever.invoke(user_query)
-response = chain.invoke({"context": documents})
+
+# Invoke the chain with both context and the user's question
+response = chain.invoke({"context": documents, "question": user_query})
 
 print("RESULT:", response)
-print("Source" , documents)
+print("Source", documents)
